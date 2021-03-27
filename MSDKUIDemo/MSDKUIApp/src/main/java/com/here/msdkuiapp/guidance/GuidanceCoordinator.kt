@@ -16,9 +16,11 @@
 
 package com.here.msdkuiapp.guidance
 
-import androidx.fragment.app.FragmentManager
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
+import android.graphics.PointF
+import androidx.fragment.app.FragmentManager
 import com.here.android.mpa.guidance.NavigationManager
 import com.here.android.mpa.mapping.Map
 import com.here.android.mpa.routing.Route
@@ -26,12 +28,12 @@ import com.here.android.mpa.routing.RouteResult
 import com.here.android.mpa.routing.RoutingError
 import com.here.msdkuiapp.R
 import com.here.msdkuiapp.base.BaseFragmentCoordinator
-import com.here.msdkuiapp.msdkuiApplication
 import com.here.msdkuiapp.common.Provider
 import com.here.msdkuiapp.guidance.SingletonHelper.navigationManager
 import com.here.msdkuiapp.isLocationOk
 import com.here.msdkuiapp.landing.LandingActivity
 import com.here.msdkuiapp.map.MapFragmentWrapper
+import com.here.msdkuiapp.msdkuiApplication
 import java.lang.ref.WeakReference
 
 /**
@@ -60,7 +62,7 @@ class GuidanceCoordinator(private val context: Context, fragmentManager: Fragmen
 
     internal val navigationManagerEventListener: NavigationManager.NavigationManagerEventListener =
             object : NavigationManager.NavigationManagerEventListener() {
-                override fun onEnded(navigationMode : NavigationManager.NavigationMode?) {
+                override fun onEnded(navigationMode: NavigationManager.NavigationMode?) {
                     didGuidanceFinished = true
                 }
             }
@@ -119,6 +121,18 @@ class GuidanceCoordinator(private val context: Context, fragmentManager: Fragmen
         doMapSettings(mapFragment!!.map!!)
         route = context.msdkuiApplication.route
         init()
+        if (context.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            mapFragment?.view?.post {
+                getFragment(R.id.maneuver_panel_container)?.view?.let {
+                    it.post changeDim@{
+                        val m = mapFragment?.map ?: return@changeDim
+                        println("INITIAL CENTER: ${m.transformCenter.x}, ${m.transformCenter.y}")
+                        m.transformCenter = PointF(it.measuredWidth + (m.width - it.measuredWidth) / 2f, m.height / 2f)
+                        println("CENTER CHANGED: ${m.transformCenter.x}, ${m.transformCenter.y}")
+                    }
+                }
+            }
+        }
     }
 
     private fun init() {
