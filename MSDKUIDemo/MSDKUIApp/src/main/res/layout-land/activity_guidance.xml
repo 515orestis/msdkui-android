@@ -22,6 +22,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:background="?attr/colorBackgroundDark">
 
+    <fragment
+        android:id="@+id/mapfragment_wrapper"
+        class="com.here.msdkuiapp.map.MapFragmentWrapper"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:contentDescription="@string/msdkui_app_map_view"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/vertical_guideline"
         android:layout_width="0dp"
@@ -66,14 +75,7 @@
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-    <fragment
-        android:id="@+id/mapfragment_wrapper"
-        class="com.here.msdkuiapp.map.MapFragmentWrapper"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:contentDescription="@string/msdkui_app_map_view"
-        app:layout_constraintLeft_toRightOf="@id/vertical_guideline"
-        app:layout_constraintRight_toRightOf="parent" />
+
 
     <FrameLayout
         android:id="@+id/current_street_name_fragment"
